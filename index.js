@@ -161,6 +161,14 @@ module.exports.cmdVersion = function(image, version, last) {
     cmd.push('-flatten');
   }
 
+  if (version.fuzz) {
+    cmd.push(sprintf('-fuzz "%s"', version.fuzz));
+  }
+  if (version.transparentColor) {
+    cmd.push(sprintf('-transparent "%s"', version.transparentColor));
+  }
+
+
   // -crop
   var crop = module.exports.crop(image, version.aspect);
   if (crop.geometry) {
@@ -180,6 +188,8 @@ module.exports.cmdVersion = function(image, version, last) {
   } else {
     cmd.push(sprintf('-write %s +delete', version.path));
   }
+
+
 
   return cmd.join(' ');
 };

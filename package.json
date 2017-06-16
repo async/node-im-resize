@@ -1,5 +1,5 @@
 {
-  "name": "im-resize3",
+  "name": "im-resize",
   "version": "3.0.0",
   "description": "Efficient image resize with multiple versions support",
   "main": "index.js",

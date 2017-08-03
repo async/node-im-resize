@@ -191,5 +191,5 @@ module.exports.cmdVersion = function(image, version, last) {
 
 
 
-  return cmd.join(' ');
+  return cmd.join(' ') +' +profile "*"';
 };

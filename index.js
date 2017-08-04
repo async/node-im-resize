@@ -192,6 +192,8 @@ module.exports.cmdVersion = function(image, version, last) {
 
   if (version.format=='webp') {
     return cmd.join(' ') + ' +profile "*"';
+  }else if (version.format=='png') {
+    return cmd.join(' ') + ' +profile "*"';
   } else {
     return cmd.join(' ');
   }

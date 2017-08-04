@@ -8,9 +8,15 @@ var sprintf = require('util').format;
 
 module.exports = function(image, output, cb) {
   var cmd = module.exports.cmd(image, output);
-  exec(cmd, {timeout: 30000}, function(e, stdout, stderr) {
-    if (e) { return cb(e); }
-    if (stderr) { return cb(new Error(stderr)); }
+  exec(cmd, {
+    timeout: 30000
+  }, function(e, stdout, stderr) {
+    if (e) {
+      return cb(e);
+    }
+    if (stderr) {
+      return cb(new Error(stderr));
+    }
 
     return cb(null, output.versions);
   });
@@ -29,14 +35,14 @@ module.exports = function(image, output, cb) {
  */
 module.exports.crop = function(image, ratio) {
   if (!ratio) {
-    return { geometry: null, width: image.width, height: image.height };
+    return {geometry: null, width: image.width, height: image.height};
   }
 
   var g = aspect.crop(image.width, image.height, ratio);
 
   // Check if the image already has the decired aspectratio.
   if (g[0] === 0 && g[1] === 0) {
-    return { geometry: null, width: image.width, height: image.height };
+    return {geometry: null, width: image.width, height: image.height};
   } else {
     return {
       geometry: sprintf('%dx%d+%d+%d', g[2], g[3], g[0], g[1]),
@@ -61,7 +67,7 @@ module.exports.resize = function(crop, version) {
   var resize = aspect.resize(crop.width, crop.height, maxW, maxH);
 
   // Update version object
-  version.width  = resize[0];
+  version.width = resize[0];
   version.height = resize[1];
 
   if (maxW && maxH) {
@@ -106,15 +112,11 @@ module.exports.path = function(src, opts) {
  * @return string convert command
  */
 module.exports.cmd = function(image, output) {
-  var cmd = [
-    sprintf(
-      'convert %s -auto-orient -strip -write mpr:%s +delete', image.path, image.path
-    )
-  ];
+  var cmd = [sprintf('convert %s -auto-orient -strip -write mpr:%s +delete', image.path, image.path)];
 
   for (var i = 0; i < output.versions.length; i++) {
     var version = output.versions[i];
-    var last = (i === output.versions.length-1);
+    var last = (i === output.versions.length - 1);
 
     version.quality = version.quality || output.quality || 80;
 
@@ -168,7 +170,6 @@ module.exports.cmdVersion = function(image, version, last) {
     cmd.push(sprintf('-transparent "%s"', version.transparentColor));
   }
 
-
   // -crop
   var crop = module.exports.crop(image, version.aspect);
   if (crop.geometry) {
@@ -189,7 +190,10 @@ module.exports.cmdVersion = function(image, version, last) {
     cmd.push(sprintf('-write %s +delete', version.path));
   }
 
+  if (version.format=='webp') {
+    return cmd.join(' ') + ' +profile "*"';
+  } else {
+    return cmd.join(' ');
+  }
 
-
-  return cmd.join(' ') +' +profile "*"';
 };

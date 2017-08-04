@@ -112,7 +112,7 @@ module.exports.path = function(src, opts) {
  * @return string convert command
  */
 module.exports.cmd = function(image, output) {
-  var cmd = [sprintf('convert %s -auto-orient -strip -write mpr:%s +delete', image.path, image.path)];
+  var cmd = [sprintf('convert %s -auto-orient +profile "*" -strip -write mpr:%s +delete', image.path, image.path)];
 
   for (var i = 0; i < output.versions.length; i++) {
     var version = output.versions[i];
@@ -190,12 +190,7 @@ module.exports.cmdVersion = function(image, version, last) {
     cmd.push(sprintf('-write %s +delete', version.path));
   }
 
-  if (version.format=='webp') {
-    return cmd.join(' ') + ' +profile "*"';
-  }else if (version.format=='png') {
-    return cmd.join(' ') + ' +profile "*"';
-  } else {
     return cmd.join(' ');
-  }
+
 
 };
